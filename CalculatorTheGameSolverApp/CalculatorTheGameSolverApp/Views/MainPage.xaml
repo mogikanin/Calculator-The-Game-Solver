@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CalculatorTheGameSolverApp.Views.MainPage"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             xmlns:viewModels="clr-namespace:CalculatorTheGameSolverApp.ViewModels;assembly=CalculatorTheGameSolverApp"
+             xmlns:helpers="clr-namespace:CalculatorTheGameSolverApp.Views.Helpers;assembly=CalculatorTheGameSolverApp"
+             d:DataContext="{d:DesignInstance viewModels:MainPageVM}"
+             Padding="5">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <helpers:InvertBooleanConverter x:Key="InvertBooleanConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <Grid>
+        <StackLayout IsEnabled="{Binding Path=Busy.IsBusy, Mode=OneWay, Converter={StaticResource InvertBooleanConverter}}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Label Grid.Column="0" Grid.Row="0" Text="Initial" VerticalOptions="Center"/>
+                <Entry Grid.Column="1" Grid.Row="0" Text="{Binding Path=Initial, Mode=TwoWay}"/>
+
+                <Label Grid.Column="2" Grid.Row="0" Text="Moves" VerticalOptions="Center"/>
+                <Entry Grid.Column="3" Grid.Row="0" Text="{Binding Path=Moves, Mode=TwoWay}"/>
+
+                <Label Grid.Column="4" Grid.Row="0" Text="Goal" VerticalOptions="Center"/>
+                <Entry Grid.Column="5" Grid.Row="0" Text="{Binding Path=Goal, Mode=TwoWay}"/>
+            </Grid>
+
+            <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Margin="0,15,0,0">
+                <Label Text="Choose Operation(s)" VerticalOptions="Center"/>
+                <Picker ItemsSource="{Binding Path=AvailableOperations, Mode=OneTime}" SelectedItem="{Binding Path=CurrentOperation, Mode=TwoWay}"
+                        WidthRequest="200"/>
+            </StackLayout>
+
+            <StackLayout Orientation="Horizontal" Margin="0,2,0,0" HorizontalOptions="Center">
+                <ContentView x:Name="OperationOptions" />
+                <Button Text="Add" Command="{Binding Path=CommandAddOperation, Mode=OneTime}"/>
+            </StackLayout>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Row="0" Grid.Column="0" Text="Clear" Command="{Binding Path=CommandClear, Mode=OneTime}"/>
+                <Label Grid.Row="0" Grid.Column="1" TextColor="DarkGreen" Text="Solution Found!" HorizontalOptions="Center"
+                       IsVisible="{Binding Path=IsSolutionFound, Mode=OneWay}"
+                       VerticalOptions="Center"/>
+                <Button Grid.Row="0" Grid.Column="2" Text="SOLVE IT!" HorizontalOptions="End" Command="{Binding Path=CommandSolveIt, Mode=OneTime}"
+                        Padding="20,10" FontAttributes="Bold"/>
+            </Grid>
+
+            <Frame BorderColor="Accent">
+                <ListView ItemsSource="{Binding Path=Operations, Mode=OneWay}"
+                          SelectionMode="None">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <Label Text="{Binding Path=Title, Mode=OneTime}"/>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Frame>
+
+            <Label VerticalOptions="End" HorizontalOptions="End" Text="© 2018 Max Miroshnikov. All Rights Reserved." TextColor="LightGray"/>
+        </StackLayout>
+
+        <ActivityIndicator Color="Red" IsRunning="{Binding Path=Busy.IsBusy, Mode=OneWay}" WidthRequest="50" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand"/>
+    </Grid>
+</ContentPage>
