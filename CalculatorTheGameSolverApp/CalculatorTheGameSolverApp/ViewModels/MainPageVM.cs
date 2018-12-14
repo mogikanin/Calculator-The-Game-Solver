@@ -22,28 +22,54 @@ namespace CalculatorTheGameSolverApp.ViewModels
         {
             AvailableOperations = new List<AvailableOperationVM>
             {
-                new AvailableOperationVM("Add +", OperationType.Add, () => new SingleItemView()),
-                new AvailableOperationVM("Subtract -", OperationType.Subtract, () => new SingleItemView()),
-                new AvailableOperationVM("Multiply x", OperationType.Multiply, () => new SingleItemView()),
-                new AvailableOperationVM("Divide /", OperationType.Divide, () => new SingleItemView()),
-                new AvailableOperationVM("Power x^n", OperationType.Pow, () => new SingleItemView()),
-                new AvailableOperationVM("Append", OperationType.Append, () => new SingleItemView()),
-                new AvailableOperationVM("Replace =>", OperationType.Replace, () => new ReplaceOperationView()),
-                new AvailableOperationVM("Invert sign +/-", OperationType.InvertSign),
-                new AvailableOperationVM("Remove last <<", OperationType.RemoveLast),
-                new AvailableOperationVM("Reverse", OperationType.Reverse),
-                new AvailableOperationVM("Sum", OperationType.Sum),
-                new AvailableOperationVM("< Shift", OperationType.ShiftRight),
-                new AvailableOperationVM("Shift >", OperationType.ShiftLeft),
-                new AvailableOperationVM("Mirror", OperationType.Mirror),
-                new AvailableOperationVM("Changer [+]", OperationType.Changer, () => new SingleItemView()),
+                new AvailableOperationVM("Add +",
+                    vm => !vm.TryParseValue1(out var value1)
+                        ? null
+                        : new ArithmeticOperation(value1, ArithmeticOperationType.Add), () => new SingleItemView()),
+                new AvailableOperationVM("Subtract -",
+                    vm => !vm.TryParseValue1(out var value1)
+                        ? null
+                        : new ArithmeticOperation(value1, ArithmeticOperationType.Subtract),
+                    () => new SingleItemView()),
+                new AvailableOperationVM("Multiply x",
+                    vm => !vm.TryParseValue1(out var value1)
+                        ? null
+                        : new ArithmeticOperation(value1, ArithmeticOperationType.Multiply),
+                    () => new SingleItemView()),
+                new AvailableOperationVM("Divide /",
+                    vm => !vm.TryParseValue1(out var value1)
+                        ? null
+                        : new ArithmeticOperation(value1, ArithmeticOperationType.Divide), () => new SingleItemView()),
+                new AvailableOperationVM("Power x^n",
+                    vm => !vm.TryParseValue1(out var value1)
+                        ? null
+                        : new ArithmeticOperation(value1, ArithmeticOperationType.Pow), () => new SingleItemView()),
+                new AvailableOperationVM("Append",
+                    vm => !vm.TryParseValue1(out var value1) ? null : new AppendOperation(value1),
+                    () => new SingleItemView()),
+                new AvailableOperationVM("Replace =>", delegate(AvailableOperationVM vm)
+                {
+                    if (!vm.TryParseValue1(out var value1)) return null;
+                    if (!vm.TryParseValue2(out var value2)) return null;
+                    return new ReplaceOperation(value1, value2);
+                }, () => new ReplaceOperationView()),
+                new AvailableOperationVM("Invert sign +/-", _ => new InvertSignOperation()),
+                new AvailableOperationVM("Remove last <<", _ => new RemoveLastOperation()),
+                new AvailableOperationVM("Reverse", _ => new ReverseOperation()),
+                new AvailableOperationVM("Sum", _ => new SumOperation()),
+                new AvailableOperationVM("< Shift", _ => new ShiftOperation(false)),
+                new AvailableOperationVM("Shift >", _ => new ShiftOperation(true)),
+                new AvailableOperationVM("Mirror", _ => new MirrorOperation()),
+                new AvailableOperationVM("Changer [+]",
+                    vm => !vm.TryParseValue1(out var value1) ? null : new ChangerOperation(value1),
+                    () => new SingleItemView()),
             };
 
             Operations = new ObservableCollection<OperationVM>();
 
             CommandAddOperation = new Command((Action)delegate
             {
-                var operation = CurrentOperation?.CreateOperation();
+                var operation = CurrentOperation?.CreateOperationFunc(CurrentOperation);
                 if (operation != null)
                 {
                     Operations.Add(new OperationVM(operation));

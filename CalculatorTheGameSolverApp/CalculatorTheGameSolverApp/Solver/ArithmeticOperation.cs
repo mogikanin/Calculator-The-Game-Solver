@@ -5,9 +5,9 @@ namespace CalculatorTheGameSolverApp.Solver
     internal class ArithmeticOperation : IChangeableOperation
     {
         private int _coefficient;
-        private readonly OperationType _type;
+        private readonly ArithmeticOperationType _type;
 
-        public ArithmeticOperation(int coefficient, OperationType type)
+        public ArithmeticOperation(int coefficient, ArithmeticOperationType type)
         {
             _coefficient = coefficient;
             _type = type;
@@ -17,15 +17,15 @@ namespace CalculatorTheGameSolverApp.Solver
         {
             switch (_type)
             {
-                case OperationType.Add:
+                case ArithmeticOperationType.Add:
                     return value + _coefficient;
-                case OperationType.Subtract:
+                case ArithmeticOperationType.Subtract:
                     return value - _coefficient;
-                case OperationType.Multiply:
+                case ArithmeticOperationType.Multiply:
                     return value * _coefficient;
-                case OperationType.Divide:
+                case ArithmeticOperationType.Divide:
                     return value / _coefficient;
-                case OperationType.Pow:
+                case ArithmeticOperationType.Pow:
                     return (int)Math.Pow(value, _coefficient);
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -36,11 +36,11 @@ namespace CalculatorTheGameSolverApp.Solver
         {
             switch (_type)
             {
-                case OperationType.Multiply:
+                case ArithmeticOperationType.Multiply:
                     return value != 0 && value*_coefficient <= Consts.MAX_NUMBER;
-                case OperationType.Pow:
+                case ArithmeticOperationType.Pow:
                     return value != 0 && Math.Pow(value, _coefficient) <= Consts.MAX_NUMBER;
-                case OperationType.Divide:
+                case ArithmeticOperationType.Divide:
                     return value != 0 && value % _coefficient == 0;
                 default:
                    return true;
@@ -51,15 +51,15 @@ namespace CalculatorTheGameSolverApp.Solver
         {
             switch (_type)
             {
-                case OperationType.Add:
+                case ArithmeticOperationType.Add:
                     return "+" + _coefficient;
-                case OperationType.Subtract:
+                case ArithmeticOperationType.Subtract:
                     return "-" + _coefficient;
-                case OperationType.Multiply:
+                case ArithmeticOperationType.Multiply:
                     return "x" + _coefficient;
-                case OperationType.Divide:
+                case ArithmeticOperationType.Divide:
                     return "/" + _coefficient;
-                case OperationType.Pow:
+                case ArithmeticOperationType.Pow:
                     return "x^" + _coefficient;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -75,5 +75,14 @@ namespace CalculatorTheGameSolverApp.Solver
         {
             return (IChangeableOperation)MemberwiseClone();
         }
+    }
+
+    internal enum ArithmeticOperationType
+    {
+        Add,
+        Subtract,
+        Multiply,
+        Divide,
+        Pow,
     }
 }
