@@ -22,10 +22,10 @@ namespace CalculatorTheGameSolverApp.Solver
         public List<IOperation> Solve(int current, int moves)
         {
             var currentOperations = new List<IOperation>(moves);
-            return Solve(current, moves, currentOperations);
+            return Solve(current, moves, currentOperations, _availableOperations);
         }
 
-        private List<IOperation> Solve(int current, int moves, List<IOperation> currentOperations)
+        private List<IOperation> Solve(int current, int moves, List<IOperation> currentOperations, List<IOperation> availableOperations)
         {
             if (moves < 0) return null;
             if (moves == 0)
@@ -33,17 +33,44 @@ namespace CalculatorTheGameSolverApp.Solver
                 return current == _goal ? currentOperations : null;
             }
 
-            foreach (var availableOperation in _availableOperations)
+            foreach (var availableOperation in availableOperations)
             {
-                if (availableOperation.CanApplyTo(current))
-                {
-                    var nextCurrent = availableOperation.Apply(current);
-                    currentOperations.Add(availableOperation);
-                    var res = Solve(nextCurrent, moves - 1, currentOperations);
-                    if (res != null) return res;
+                if (!availableOperation.CanApplyTo(current)) continue;
 
-                    currentOperations.RemoveAt(currentOperations.Count - 1);
+                int nextCurrent;
+                List<IOperation> nextIterationAvailableOperations;
+                if (availableOperation is ChangerOperation operation)
+                {
+                    // Apply changer
+                    var changer = operation;
+                    nextIterationAvailableOperations = new List<IOperation>(availableOperations.Count);
+                    foreach (var aOp in availableOperations)
+                    {
+                        if (aOp is IChangeableOperation changeableOperation)
+                        {
+                            var clone = changeableOperation.Clone();
+                            nextIterationAvailableOperations.Add(clone);
+                            clone.Change(changer);
+                        }
+                        else
+                        {
+                            nextIterationAvailableOperations.Add(aOp);
+                        }
+                    }
+
+                    nextCurrent = current;
                 }
+                else
+                {
+                    nextIterationAvailableOperations = availableOperations;
+                    nextCurrent = availableOperation.Apply(current);
+                }
+
+                currentOperations.Add(availableOperation);
+                var res = Solve(nextCurrent, moves - 1, currentOperations, nextIterationAvailableOperations);
+                if (res != null) return res;
+
+                currentOperations.RemoveAt(currentOperations.Count - 1);
             }
 
             return null;

@@ -2,9 +2,9 @@
 
 namespace CalculatorTheGameSolverApp.Solver
 {
-    internal class ArithmeticOperation : IOperation
+    internal class ArithmeticOperation : IChangeableOperation
     {
-        private readonly int _coefficient;
+        private int _coefficient;
         private readonly OperationType _type;
 
         public ArithmeticOperation(int coefficient, OperationType type)
@@ -64,6 +64,16 @@ namespace CalculatorTheGameSolverApp.Solver
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        public void Change(ChangerOperation operation)
+        {
+            _coefficient = operation.Change(_coefficient);
+        }
+
+        public IChangeableOperation Clone()
+        {
+            return (IChangeableOperation)MemberwiseClone();
         }
     }
 }

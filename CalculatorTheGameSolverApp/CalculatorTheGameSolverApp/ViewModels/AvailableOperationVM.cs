@@ -60,6 +60,9 @@ namespace CalculatorTheGameSolverApp.ViewModels
                     return new ShiftOperation(false);
                 case OperationType.Mirror:
                     return new MirrorOperation();
+                case OperationType.Changer:
+                    if (!TryParseValue1(out value1)) return null;
+                    return new ChangerOperation(value1);
                 default:
                     throw new ArgumentOutOfRangeException();
             }

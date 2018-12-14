@@ -16,5 +16,6 @@
         ShiftLeft,
         ShiftRight,
         Mirror,
+        Changer
     }
 }

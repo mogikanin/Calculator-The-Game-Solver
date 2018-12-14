@@ -2,9 +2,9 @@
 
 namespace CalculatorTheGameSolverApp.Solver
 {
-    internal class AppendOperation : IOperation
+    internal class AppendOperation : IChangeableOperation
     {
-        private readonly int _append;
+        private int _append;
 
         public AppendOperation(int append)
         {
@@ -19,6 +19,16 @@ namespace CalculatorTheGameSolverApp.Solver
         public bool CanApplyTo(int value)
         {
             return Math.Abs(value).ToString().Length < Consts.MAX_NUMBER_LENGTH;
+        }
+
+        public IChangeableOperation Clone()
+        {
+            return (IChangeableOperation)MemberwiseClone();
+        }
+
+        public void Change(ChangerOperation operation)
+        {
+            _append = operation.Change(_append);
         }
 
         public override string ToString()
