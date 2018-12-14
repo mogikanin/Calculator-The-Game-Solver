@@ -15,5 +15,6 @@
         Sum,
         ShiftLeft,
         ShiftRight,
+        Mirror,
     }
 }

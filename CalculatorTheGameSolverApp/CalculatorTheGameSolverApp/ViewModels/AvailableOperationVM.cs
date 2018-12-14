@@ -1,18 +1,21 @@
 ﻿using System;
 using CalculatorTheGameSolverApp.Solver;
+using Xamarin.Forms;
 
 namespace CalculatorTheGameSolverApp.ViewModels
 {
     internal class AvailableOperationVM
     {
-        public AvailableOperationVM(string title, OperationType operationType)
+        public AvailableOperationVM(string title, OperationType operationType, Func<View> editorFunc = null)
         {
             Title = title;
             OperationType = operationType;
+            EditorFunc = editorFunc;
         }
 
-        public string Title { get; }
-        public OperationType OperationType { get; }
+        private string Title { get; }
+        private OperationType OperationType { get; }
+        public Func<View> EditorFunc { get; }
         public string Value1 { get; set; }
         public string Value2 { get; set; }
 
@@ -55,6 +58,8 @@ namespace CalculatorTheGameSolverApp.ViewModels
                     return new ShiftOperation(true);
                 case OperationType.ShiftRight:
                     return new ShiftOperation(false);
+                case OperationType.Mirror:
+                    return new MirrorOperation();
                 default:
                     throw new ArgumentOutOfRangeException();
             }

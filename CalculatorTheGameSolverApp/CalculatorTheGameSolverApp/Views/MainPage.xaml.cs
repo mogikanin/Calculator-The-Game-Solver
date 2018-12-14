@@ -1,8 +1,5 @@
-﻿using System;
-using System.ComponentModel;
-using CalculatorTheGameSolverApp.Solver;
+﻿using System.ComponentModel;
 using CalculatorTheGameSolverApp.ViewModels;
-using Xamarin.Forms;
 
 namespace CalculatorTheGameSolverApp.Views
 {
@@ -39,32 +36,7 @@ namespace CalculatorTheGameSolverApp.Views
                 return;
             }
 
-            View content;
-            switch (current.OperationType)
-            {
-               case OperationType.Replace:
-                   content = new ReplaceOperationView();
-                   break;
-                case OperationType.InvertSign:
-                case OperationType.RemoveLast:
-                case OperationType.Reverse:
-                case OperationType.Sum:
-                case OperationType.ShiftLeft:
-                case OperationType.ShiftRight:
-                    content = null;
-                    break;
-                case OperationType.Add:
-                case OperationType.Append:
-                case OperationType.Divide:
-                case OperationType.Multiply:
-                case OperationType.Pow:
-                case OperationType.Subtract:
-                    content = new SingleItemView();
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
+            var content = current.EditorFunc?.Invoke();
             if (content != null)
             {
                 content.BindingContext = current;

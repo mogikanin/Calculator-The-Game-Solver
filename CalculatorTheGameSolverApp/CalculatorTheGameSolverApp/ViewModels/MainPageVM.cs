@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using CalculatorTheGameSolverApp.Solver;
+using CalculatorTheGameSolverApp.Views;
 using Xamarin.Forms;
 
 namespace CalculatorTheGameSolverApp.ViewModels
@@ -21,19 +22,20 @@ namespace CalculatorTheGameSolverApp.ViewModels
         {
             AvailableOperations = new List<AvailableOperationVM>
             {
-                new AvailableOperationVM("Add (+)", OperationType.Add),
-                new AvailableOperationVM("Subtract (-)", OperationType.Subtract),
-                new AvailableOperationVM("Multiply (x)", OperationType.Multiply),
-                new AvailableOperationVM("Divide (/)", OperationType.Divide),
-                new AvailableOperationVM("Power (x^n)", OperationType.Pow),
-                new AvailableOperationVM("Append", OperationType.Append),
-                new AvailableOperationVM("Replace (=>)", OperationType.Replace),
+                new AvailableOperationVM("Add (+)", OperationType.Add, () => new SingleItemView()),
+                new AvailableOperationVM("Subtract (-)", OperationType.Subtract, () => new SingleItemView()),
+                new AvailableOperationVM("Multiply (x)", OperationType.Multiply, () => new SingleItemView()),
+                new AvailableOperationVM("Divide (/)", OperationType.Divide, () => new SingleItemView()),
+                new AvailableOperationVM("Power (x^n)", OperationType.Pow, () => new SingleItemView()),
+                new AvailableOperationVM("Append", OperationType.Append, () => new SingleItemView()),
+                new AvailableOperationVM("Replace (=>)", OperationType.Replace, () => new ReplaceOperationView()),
                 new AvailableOperationVM("Invert sign (+/-)", OperationType.InvertSign),
                 new AvailableOperationVM("Remove last (<<)", OperationType.RemoveLast),
                 new AvailableOperationVM("Reverse", OperationType.Reverse),
                 new AvailableOperationVM("Sum", OperationType.Sum),
                 new AvailableOperationVM("< Shift", OperationType.ShiftRight),
                 new AvailableOperationVM("Shift >", OperationType.ShiftLeft),
+                new AvailableOperationVM("Mirror", OperationType.Mirror),
             };
 
             Operations = new ObservableCollection<OperationVM>();
