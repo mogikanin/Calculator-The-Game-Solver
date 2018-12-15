@@ -17,6 +17,8 @@ namespace CalculatorTheGameSolverApp.ViewModels
         private string _initial;
         private string _goal;
         private bool _isSolutionFound;
+        private string _portalIn;
+        private string _portalOut;
 
         public MainPageVM()
         {
@@ -85,6 +87,8 @@ namespace CalculatorTheGameSolverApp.ViewModels
                 Operations.Clear();
                 CurrentOperation = null;
                 IsSolutionFound = false;
+                PortalIn = null;
+                PortalOut = null;
             });
             CommandSolveIt = new Command((Action) async delegate
             {
@@ -92,11 +96,14 @@ namespace CalculatorTheGameSolverApp.ViewModels
                 if (!int.TryParse(Goal, out var goal)) return;
                 if (!int.TryParse(Initial, out var current)) return;
                 if (Operations.Count == 0) return;
+                int portalIn = 0, portalOut = 0;
+                if (!string.IsNullOrEmpty(PortalIn) && !int.TryParse(PortalIn, out portalIn)) return;
+                if (!string.IsNullOrEmpty(PortalOut) && !int.TryParse(PortalOut, out portalOut)) return;
 
                 Busy.IsBusy = true;
                 var res = await Task.Run(delegate
                 {
-                    var solver = new Solver.Solver(Operations.Select(_ => _.Operation).ToList(), goal);
+                    var solver = new Solver.Solver(Operations.Select(_ => _.Operation).ToList(), goal, portalIn, portalOut);
                     var result = solver.Solve(current, moves);
                     return result;
                 });
@@ -156,6 +163,18 @@ namespace CalculatorTheGameSolverApp.ViewModels
         {
             get => _isSolutionFound;
             private set => SetProperty(ref _isSolutionFound, value);
+        }
+
+        public string PortalIn
+        {
+            get => _portalIn;
+            set => SetProperty(ref _portalIn, value);
+        }
+
+        public string PortalOut
+        {
+            get => _portalOut;
+            set => SetProperty(ref _portalOut, value);
         }
 
         public Action<string, string, string> DisplayAlert { get; set; }

@@ -39,15 +39,17 @@
                 <Entry Grid.Column="5" Grid.Row="0" Text="{Binding Path=Goal, Mode=TwoWay}"/>
             </Grid>
 
-            <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Margin="0,15,0,0">
-                <Label Text="Choose Operation(s)" VerticalOptions="Center"/>
-                <Picker ItemsSource="{Binding Path=AvailableOperations, Mode=OneTime}" SelectedItem="{Binding Path=CurrentOperation, Mode=TwoWay}"
-                        WidthRequest="200"/>
+            <StackLayout Orientation="Horizontal" Margin="0,2,0,0" HorizontalOptions="Center">
+                <Picker  ItemsSource="{Binding Path=AvailableOperations, Mode=OneTime}" SelectedItem="{Binding Path=CurrentOperation, Mode=TwoWay}"
+                         WidthRequest="200" Title="Choose Operation(s)"
+                         HorizontalOptions="Center" VerticalOptions="Center"/>
+                <ContentView x:Name="OperationOptions" VerticalOptions="End"/>
+                <Button Text="Add" Command="{Binding Path=CommandAddOperation, Mode=OneTime}" VerticalOptions="End"/>
             </StackLayout>
 
-            <StackLayout Orientation="Horizontal" Margin="0,2,0,0" HorizontalOptions="Center">
-                <ContentView x:Name="OperationOptions" />
-                <Button Text="Add" Command="{Binding Path=CommandAddOperation, Mode=OneTime}"/>
+            <StackLayout Orientation="Horizontal">
+                <Entry Placeholder="Portal in" Text="{Binding Path=PortalIn, Mode=TwoWay}"/>
+                <Entry Placeholder="Portal out" Text="{Binding Path=PortalOut, Mode=TwoWay}"/>
             </StackLayout>
 
             <Grid>

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace CalculatorTheGameSolverApp.Solver
@@ -13,11 +14,15 @@ namespace CalculatorTheGameSolverApp.Solver
     {
         private readonly List<IOperation> _availableOperations;
         private readonly int _goal;
+        private readonly int _portalIn;
+        private readonly int _portalOut;
 
-        public Solver(List<IOperation> availableOperations, int goal)
+        public Solver(List<IOperation> availableOperations, int goal, int portalIn, int portalOut)
         {
             _availableOperations = availableOperations;
             _goal = goal;
+            _portalIn = portalIn;
+            _portalOut = portalOut;
         }
 
         public List<IOperation> Solve(int current, int moves)
@@ -61,7 +66,7 @@ namespace CalculatorTheGameSolverApp.Solver
 
                     nextCurrent = current;
                 }
-                else if (availableOperation is StoreOperation storeOperation)
+                else if (availableOperation is StoreOperation)
                 {
                     // Check previous operation
                     if (currentOperations.LastOrDefault() is StoreOperation)
@@ -86,6 +91,7 @@ namespace CalculatorTheGameSolverApp.Solver
                 {
                     nextIterationAvailableOperations = availableOperations;
                     nextCurrent = availableOperation.Apply(current);
+                    ApplyPortals(ref nextCurrent);
                 }
 
                 currentOperations.Add(availableOperation);
@@ -97,6 +103,23 @@ namespace CalculatorTheGameSolverApp.Solver
             }
 
             return null;
+        }
+
+        private void ApplyPortals(ref int value)
+        {
+            if (_portalOut == 0 && _portalIn == 0) return;
+            var digits = value.ToString();
+
+            var outOfPortal = _portalOut > 0? digits.Substring(digits.Length - _portalOut) : string.Empty;
+            while (digits.Length > _portalIn)
+            {
+                var @out = (int)char.GetNumericValue(digits[digits.Length - _portalIn - 1]);
+                digits = digits.Remove(digits.Length - _portalIn - 1, 1);
+                var inPortal = Convert.ToInt32(digits.Substring(0, digits.Length - outOfPortal.Length)) + @out;
+                digits = inPortal + outOfPortal;
+            }
+
+            value = Convert.ToInt32(digits);
         }
     }
 }
