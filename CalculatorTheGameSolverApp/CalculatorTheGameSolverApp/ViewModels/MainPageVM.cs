@@ -63,6 +63,7 @@ namespace CalculatorTheGameSolverApp.ViewModels
                 new AvailableOperationVM("Changer [+]",
                     vm => !vm.TryParseValue1(out var value1) ? null : new ChangerOperation(value1),
                     () => new SingleItemView()),
+                new AvailableOperationVM("Store", _ => new StoreOperation()),
             };
 
             Operations = new ObservableCollection<OperationVM>();

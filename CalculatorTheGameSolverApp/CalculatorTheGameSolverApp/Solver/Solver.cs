@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace CalculatorTheGameSolverApp.Solver
 {
@@ -39,9 +40,9 @@ namespace CalculatorTheGameSolverApp.Solver
 
                 int nextCurrent;
                 List<IOperation> nextIterationAvailableOperations;
+                var decMoves = false;
                 if (availableOperation is ChangerOperation operation)
                 {
-                    // Apply changer
                     var changer = operation;
                     nextIterationAvailableOperations = new List<IOperation>(availableOperations.Count);
                     foreach (var aOp in availableOperations)
@@ -60,6 +61,27 @@ namespace CalculatorTheGameSolverApp.Solver
 
                     nextCurrent = current;
                 }
+                else if (availableOperation is StoreOperation storeOperation)
+                {
+                    // Check previous operation
+                    if (currentOperations.LastOrDefault() is StoreOperation)
+                    {
+                        continue;
+                    }
+
+                    nextCurrent = current;
+                    moves++;
+                    decMoves = true;
+                    var previousStorePop = availableOperations.OfType<StorePopOperation>().FirstOrDefault(); 
+                    nextIterationAvailableOperations = new List<IOperation>(availableOperations)
+                    {
+                        new StorePopOperation(current)
+                    };
+                    if (previousStorePop != null)
+                    {
+                        nextIterationAvailableOperations.Remove(previousStorePop);
+                    }
+                }
                 else
                 {
                     nextIterationAvailableOperations = availableOperations;
@@ -71,6 +93,7 @@ namespace CalculatorTheGameSolverApp.Solver
                 if (res != null) return res;
 
                 currentOperations.RemoveAt(currentOperations.Count - 1);
+                if (decMoves) moves--;
             }
 
             return null;
