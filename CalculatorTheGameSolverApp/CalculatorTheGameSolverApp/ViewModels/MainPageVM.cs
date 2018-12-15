@@ -49,9 +49,9 @@ namespace CalculatorTheGameSolverApp.ViewModels
                     () => new SingleItemView()),
                 new AvailableOperationVM("Replace =>", delegate(AvailableOperationVM vm)
                 {
-                    if (!vm.TryParseValue1(out var value1)) return null;
-                    if (!vm.TryParseValue2(out var value2)) return null;
-                    return new ReplaceOperation(value1, value2);
+                    if (!vm.TryParseValue1(out _)) return null;
+                    if (!vm.TryParseValue2(out _)) return null;
+                    return new ReplaceOperation(vm.Value1, vm.Value2);
                 }, () => new ReplaceOperationView()),
                 new AvailableOperationVM("Invert sign +/-", _ => new InvertSignOperation()),
                 new AvailableOperationVM("Remove last <<", _ => new RemoveLastOperation()),

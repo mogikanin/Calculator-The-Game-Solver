@@ -4,10 +4,10 @@ namespace CalculatorTheGameSolverApp.Solver
 {
     internal class ReplaceOperation : IOperation
     {
-        private readonly int _src;
-        private readonly int _dest;
+        private readonly string _src;
+        private readonly string _dest;
 
-        public ReplaceOperation(int src, int dest)
+        public ReplaceOperation(string src, string dest)
         {
             _src = src;
             _dest = dest;
@@ -15,12 +15,12 @@ namespace CalculatorTheGameSolverApp.Solver
 
         public int Apply(int value)
         {
-            return Convert.ToInt32(value.ToString().Replace(_src.ToString(), _dest.ToString()));
+            return Convert.ToInt32(value.ToString().Replace(_src, _dest));
         }
 
         public bool CanApplyTo(int value)
         {
-            return Math.Abs(value).ToString().Replace(_src.ToString(), _dest.ToString()).Length <= Consts.MAX_NUMBER_LENGTH;
+            return Math.Abs(value).ToString().Replace(_src, _dest).Length <= Consts.MAX_NUMBER_LENGTH;
         }
 
         public override string ToString()
